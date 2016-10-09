@@ -13,3 +13,7 @@
 *.idb
 *.user
 *.cache
+*.suo
+*.pgd
+*.sdf
+*.opensdf
