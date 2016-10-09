@@ -35,13 +35,13 @@ void addTo(std::vector<int>& primeFactors1, const std::vector<int>& primeFactors
 	}
 }
 
-size_t expandPrimeFactors(const std::vector<int>& primeFactors)
+unsigned int expandPrimeFactors(const std::vector<int>& primeFactors)
 {
-	size_t result = 1;
+	unsigned int result = 1;
 	const Primes& primes = Primes::get();
 	for( size_t n = 0; n < primeFactors.size(); ++n )
 	{
-		size_t p = primes.nthPrime(n+1);
+		unsigned int p = primes.nthPrime(n+1);
 		for( int i = 0; i < primeFactors[n]; ++i )
 		{
 			result *= p;
@@ -51,7 +51,7 @@ size_t expandPrimeFactors(const std::vector<int>& primeFactors)
 	return result;
 }
 
-int algorithmic(size_t upTo)
+unsigned int algorithmic(unsigned int upTo)
 {
 	const Primes& primes = Primes::get();
 	std::vector<int> primeFactors;

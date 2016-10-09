@@ -52,7 +52,7 @@ int main()
 		}
 
 		// The sequence may not start after the decimal, so calculate from iter.
-		unsigned int sequence = std::distance(iter, dividends.end());
+		unsigned int sequence = static_cast<unsigned int>(std::distance(iter, dividends.end()));
 
 		// remember the longest
 		if( sequence > longestSequence )

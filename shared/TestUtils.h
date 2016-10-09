@@ -1,8 +1,10 @@
 ﻿#pragma once
 
+#include <boost/chrono.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/timer/timer.hpp>
 
+#include <iostream>
 #include <cmath>
 
 template<typename T>

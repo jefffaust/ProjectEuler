@@ -75,7 +75,7 @@ int main()
 								assert(std::count(used.begin(), used.end(), true) == 9);
 								// Find the unused digit
 								auto iter = std::find(used.begin(), used.end(), false);
-								d[1] = std::distance(used.begin(), iter);
+								d[1] = static_cast<int>(std::distance(used.begin(), iter));
 								used[d[1]] = true;
 								assert(std::count(used.begin(), used.end(), true) == 10);
 								if( d[1] != 0 )

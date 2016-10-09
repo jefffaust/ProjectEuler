@@ -59,7 +59,7 @@ Triangle read(int rows)
 	return t;
 }
 
-void collapse(Triangle& triangle, int row)
+void collapse(Triangle& triangle, unsigned int row)
 {
 	for( size_t i = 0; i < triangle[row].size(); ++i )
 	{
@@ -73,7 +73,7 @@ int main()
 
 	Triangle triangle = read(15);
 
-	for( int row = triangle.size() - 2; row >= 0; --row )
+	for( unsigned int row = static_cast<unsigned int>(triangle.size()) - 2; row >= 0; --row )
 	{
 		collapse(triangle, row);
 	}

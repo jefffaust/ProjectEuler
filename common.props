@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <BOOST_VER>1.54.0</BOOST_VER>
+    <BOOST_VER>1.62.0</BOOST_VER>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup>
@@ -10,7 +10,7 @@
       <AdditionalIncludeDirectories>D:\3rdPty\boost-%BOOST_VER%;..\shared;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>D:\3rdPty\boost-%BOOST_VER%\lib64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\3rdPty\boost-%BOOST_VER%\lib64-msvc-14.0</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

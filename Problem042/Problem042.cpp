@@ -47,7 +47,7 @@ std::vector<bool> calcTriangleNumbers(unsigned int maxN)
 {
 	std::vector<bool> triangleNumbers;
 	triangleNumbers.resize(triangle(maxN), false);
-	for( size_t n = 1; n < maxN; ++n )
+	for( unsigned int n = 1; n < maxN; ++n )
 	{
 		triangleNumbers[triangle(n)] = true;
 	}

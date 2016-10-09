@@ -44,7 +44,7 @@ int main()
 
 	// sum everything that is not a perfect sum
 	unsigned int answer = 0;
-	for( size_t i = 0; i < perfectSums.size(); ++i )
+	for( unsigned int i = 0; i < perfectSums.size(); ++i )
 	{
 		if( !perfectSums[i] ) answer += i;
 	}
