@@ -8,12 +8,11 @@ Find the sum of all numbers, less than one million, which are palindromic in bas
 
 #include "TestUtils.h"
 
-#include <boost/array.hpp>
-
 #include <algorithm>
+#include <array>
 #include <vector>
 
-boost::array<unsigned int, 20> pow2 = {524288, 262144, 131072, 65536, 32768, 16384, 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1};
+std::array<unsigned int, 20> pow2 = {524288, 262144, 131072, 65536, 32768, 16384, 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1};
 
 const std::vector<short>& makeBinary(unsigned int n)
 {

@@ -6,14 +6,14 @@ Find the sum of all the multiples of 3 or 5 below 1000.
 
 #include "TestUtils.h"
 
-#include <boost/array.hpp>
+#include <array>
 
 int main()
 {
 	START_TIMER;
 
 	// Use a version of the Sieve of Eratosthenes, something we'll see in later problems.
-	boost::array<bool, 1000> multiples = {false};
+	std::array<bool, 1000> multiples = {false};
 	for( int i = 3; i < 1000; i += 3 ) multiples[i] = true;
 	for( int i = 5; i < 1000; i += 5 ) multiples[i] = true;
 

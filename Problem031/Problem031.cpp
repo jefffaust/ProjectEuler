@@ -10,10 +10,10 @@ How many different ways can £2 be made using any number of coins?
 
 #include "TestUtils.h"
 
-#include <boost/array.hpp>
+#include <array>
 
 enum Denom                             {TwoPound, OnePound, FiftyPence, TwentyPence, TenPence, FivePence, TwoPence, OnePence};
-boost::array<int, 8> s_denominations = {200,      100,      50,         20,          10,       5,         2,        1};
+std::array<int, 8> s_denominations = {200,      100,      50,         20,          10,       5,         2,        1};
 
 // Iterating over enums needs some casting...
 void next(Denom& denom) { denom = static_cast<Denom>(static_cast<int>(denom) + 1); }

@@ -16,14 +16,14 @@ Find the sum of all 0 to 9 pandigital numbers with this property.
 
 #include "TestUtils.h"
 
-#include <boost/array.hpp>
+#include <array>
 
 // Ugly but fast: 321 us
 int main()
 {
 	START_TIMER;
-	boost::array<bool, 10> used = {false};
-	boost::array<int, 11> d; // we don't use d[0], just to match problem description
+	std::array<bool, 10> used = {false};
+	std::array<int, 11> d; // we don't use d[0], just to match problem description
 	unsigned long long sum = 0;
 
 	for( int div2Iter = 10; div2Iter < 1000; div2Iter += 2 )

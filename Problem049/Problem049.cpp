@@ -13,13 +13,13 @@ What 12-digit number do you form by concatenating the three terms in this sequen
 #include "TestUtils.h"
 #include "Primes.h"
 
-#include <boost/array.hpp>
+#include <array>
 
 template<typename T>
 bool isPermuation(T n1, T n2)
 {
-	boost::array<int, 10> n1digits = {0};
-	boost::array<int, 10> n2digits = {0};
+	std::array<int, 10> n1digits = {0};
+	std::array<int, 10> n2digits = {0};
 	forEachDigit(n1, [&n1digits] (short d) {++n1digits[d];} );
 	forEachDigit(n2, [&n2digits] (short d) {++n2digits[d];} );
 	return n1digits == n2digits;
