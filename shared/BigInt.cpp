@@ -109,7 +109,7 @@ BigInt& BigInt::operator*=(BigInt rhs)
 	const int digitsAtATime = 9;
 	const int maxAtATime = 1000000000;
 
-	auto construct = [&] (InternalType i1, InternalType i2, int multiplier) -> BigInt {
+	auto construct = [&] (InternalType i1, InternalType i2, auto multiplier) -> BigInt {
 		BigInt bi(i1 * i2);
 		if( !multiplier || !bi ) return bi;
 
@@ -126,7 +126,7 @@ BigInt& BigInt::operator*=(BigInt rhs)
 		}
 		if( !multiplier ) return bi;
 
-		int count = multiplier / 2;
+		auto count = multiplier / 2;
 		while( count-- )
 		{
 			bi.m_value.push_back(0);
@@ -141,7 +141,7 @@ BigInt& BigInt::operator*=(BigInt rhs)
 		for( auto inner = m_value.rbegin(); inner != m_value.rend(); ++inner )
 		{
 			// Just like we learned to multiply in school, but with bigger "digits" at a time.
-			int multiplier = (distance(rhs.m_value.rbegin(), outer) + distance(m_value.rbegin(), inner)) * 2;
+			auto multiplier = (distance(rhs.m_value.rbegin(), outer) + distance(m_value.rbegin(), inner)) * 2;
 			InternalType outer_lower = *outer % maxAtATime;
 			InternalType outer_upper = *outer / maxAtATime;
 			InternalType inner_lower = *inner % maxAtATime;
