@@ -46,7 +46,7 @@ public:
 
 	// Modulo -- currently can't mod by BigInt
 	BigInt& operator%=(long long rhs);
-	BigInt operator%(long long rhs) const { return BigInt(*this) %= rhs; }
+	long long operator%(long long rhs) const;
 
 	friend std::ostream& operator<<(std::ostream& ostr, const BigInt& i);
 
@@ -76,3 +76,6 @@ inline bool operator<(long long i, const BigInt& rhs) { return BigInt(i) < rhs; 
 inline bool operator<=(long long i, const BigInt& rhs) { return BigInt(i) <= rhs; }
 inline bool operator>(long long i, const BigInt& rhs) { return BigInt(i) > rhs; }
 inline bool operator>=(long long i, const BigInt& rhs) { return BigInt(i) >= rhs; }
+
+// bigpow is based on https://en.wikipedia.org/wiki/Exponentiation_by_squaring#Basic_method
+BigInt bigpow(unsigned int b, unsigned int p);

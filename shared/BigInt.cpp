@@ -190,6 +190,11 @@ BigInt& BigInt::operator%=(long long rhs)
 	return normalize();
 }
 
+long long BigInt::operator%(long long rhs) const
+{
+	return m_value.back() % rhs;
+}
+
 std::ostream& operator<<(std::ostream& ostr, const BigInt& bi)
 {
 	if( bi.m_value.empty() )
@@ -257,4 +262,27 @@ BigInt& BigInt::normalize()
 	}
 
 	return *this;
+}
+
+// bigpow is based on https://en.wikipedia.org/wiki/Exponentiation_by_squaring#Basic_method
+BigInt bigpow(unsigned int b, unsigned int p)
+{
+	BigInt answer(1);
+	if (p == 0) return answer;
+	BigInt bb(b);
+	while (p > 1)
+	{
+		if (p % 2 == 0)
+		{
+			bb *= bb;
+			p /= 2;
+		}
+		else
+		{
+			answer *= bb;
+			bb *= bb;
+			p = (p - 1) / 2;
+		}
+	}
+	return answer *= bb;
 }

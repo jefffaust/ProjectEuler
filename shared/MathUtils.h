@@ -54,16 +54,16 @@ void forEachDigit(T t, F f)
 {
 	while( t )
 	{
-		f(t % 10);
+		f(static_cast<int>(t % 10));
 		t /= 10;
 	}
 }
 
 template<typename T>
-T sumDigits(T t)
+unsigned int sumDigits(T t)
 {
-	T sum = 0;
-	forEachDigit(t, [&sum] (const T& d) { sum += d; });
+	unsigned int sum = 0;
+	forEachDigit(t, [&sum] (int d) { sum += d; });
 	return sum;
 }
 
