@@ -68,10 +68,10 @@ unsigned int sumDigits(T t)
 }
 
 template<typename T>
-T countDigits(T t)
+unsigned long long countDigits(T t)
 {
-	T count = 0;
-	forEachDigit(t, [&count] (const T&) { ++count; });
+	unsigned long long count = 0;
+	forEachDigit(t, [&count] (const int&) { ++count; });
 	return count;
 }
 
