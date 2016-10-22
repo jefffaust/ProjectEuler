@@ -20,13 +20,14 @@ both diagonals first falls below 10%?
 #include "Primes.h"
 #include "TestUtils.h"
 
-// 17 seconds. Room for improvement?
+// 15 seconds. Room for improvement?
+// Nothing obvious... the prime check goes up to 685 million.
 int main()
 {
 	START_TIMER;
 
 	unsigned int primeCount = 0;
-	unsigned int count = 1;
+	unsigned int totalDiagCount = 1;
 
 	const Primes& primes = Primes::get();
 
@@ -37,15 +38,18 @@ int main()
 		unsigned int c = b - (sideLength - 1);
 		unsigned int d = c - (sideLength - 1);
 
-		count += 4;
+		// Count a, b, c, d
+		totalDiagCount += 4;
 
 		if (primes.isPrime(a)) ++primeCount;
 		if (primes.isPrime(b)) ++primeCount;
 		if (primes.isPrime(c)) ++primeCount;
 		if (primes.isPrime(d)) ++primeCount;
 
-		if (static_cast<double>(primeCount) / count < .1)
+		if (static_cast<double>(primeCount) / totalDiagCount < .1)
 		{
+			//std::cout << "primeCount: " << primeCount << std::endl;
+			//std::cout << "a: " << a << std::endl;
 			return result(26241, sideLength);
 		}
 	}
