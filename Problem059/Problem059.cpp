@@ -25,26 +25,58 @@ the message and find the sum of the ASCII values in the original text.
 
 #include "TestUtils.h"
 
-#include <boost/noncopyable.hpp>
-
+#include <algorithm>
 #include <array>
-#include <cassert>
 #include <fstream>
 #include <numeric>
+#include <string>
 #include <vector>
 
-typedef std::vector<int> Cipher;
+const int keySize = 3;
 typedef std::string Message;
+typedef std::vector<char> Cipher;
 
-class Key : boost::noncopyable
+class Key
 {
-	static const int KeySize = 3;
-	typedef std::array<char, KeySize> KeyType;
 public:
-	Key()
+	typedef std::array<char, 3> KeyType;
+	Key(KeyType k)
+		: m_key(k)
 	{
-		m_key.fill('a');
-		for (auto& allowed : m_allowed) allowed.fill(true);
+	}
+
+	Key() : Key({ 'a', 'a', 'a' })
+	{
+	}
+
+	char encrypt(char c, size_t keyIndex) const
+	{
+		return c ^ m_key[keyIndex % m_key.size()];
+	}
+
+	char decrypt(char c, size_t keyIndex) const
+	{
+		// same as encrypt
+		return encrypt(c, keyIndex);
+	}
+
+	// increments m_key
+	void next(int i = 0)
+	{
+		if (m_key[i] < 'z')
+		{
+			++m_key[i];
+			return;
+		}
+
+		if (i + 1 == m_key.size())
+		{
+			m_done = true;
+			return;
+		}
+
+		m_key[i] = 'a';
+		return next(i + 1);
 	}
 
 	operator bool() const
@@ -52,142 +84,92 @@ public:
 		return !m_done;
 	}
 
-	void ignore()
-	{
-		auto& allowed = m_allowed[m_keyIndex];
-		const auto c = m_key[m_keyIndex];
-		int allowedIndex = c - 'a';
-		allowed[allowedIndex] = false;
-		next(m_keyIndex);
-		m_keyIndex = 0;
-	}
-
-	void next()
-	{
-		next(0);
-	}
-
-	char decryptChar(int i) const
-	{
-		i ^= m_key[m_keyIndex];
-		return (i > 0 && i <= std::numeric_limits<char>::max()) ? static_cast<char>(i) : 0;
-	}
-
-	void step()
-	{
-		m_keyIndex = (m_keyIndex + 1) % m_key.size();
-	}
-
 private:
-	bool next(size_t i)
-	{
-		if (i >= m_key.size())
-		{
-			m_done = true;
-			return false;
-		}
-
-		const auto& allowed = m_allowed[i];
-		for (auto c = m_key[i] + 1; c <= 'z'; ++c)
-		{
-			if (allowed[c - 'a'])
-			{
-				m_key[i] = c;
-				return true;
-			}
-		}
-
-		for (auto c = 'a'; c < m_key[i]; ++c)
-		{
-			if (allowed[c - 'a'])
-			{
-				m_key[i] = c;
-			}
-		}
-
-		return next(i + 1);
-	}
-
 	KeyType m_key;
-	size_t m_keyIndex = 0;
-	std::array<std::array<bool, 26>, KeySize> m_allowed;
 	bool m_done = false;
 };
 
-bool isEnglish(const Message& message)
+bool isDelimiter(char c)
 {
-	return false;
+	return isspace(c) || c == '.' || c == ';' || c == ',' || c == '-' || c == '?' || c == '!' || c == '(' || c == ')';
 }
 
-bool allowedPunctuation(char c)
+bool charInWord(char c)
 {
-	return c == '.' || c == '!' || c == '?' || c == ',';
+	return isalnum(c) || c == '\''; // Handle single quotes for contractions
 }
 
-bool allowed(char c)
+Message tryDecryptWord(Cipher::const_iterator& iter, const Cipher::const_iterator& end, Key& key, size_t& index)
 {
-	return isalnum(c) || isspace(c) || allowedPunctuation(c);
-}
-
-bool isWord(const Message& word)
-{
-	if (word.length() > 15)
+	Message word;
+	for (; iter != end; ++iter, ++index )
 	{
-		return false;
-	}
+		auto c = key.decrypt(*iter, index);
+		if (isDelimiter(c))
+		{
+			// reached end of word
+			return word;
+		}
 
-	for (size_t i = 0; i < word.size() - 1; ++i )
-	{
-		if (!isalpha(word[i])) return false;
-	}
+		if (!charInWord(c))
+		{
+			// illegal character
+			return Message();
+		}
 
-	if (word.length() == 1)
-	{
-		return isalnum(word[0]) && true;
+		// valid character
+		word.push_back(c);
 	}
-
-	return true;
+	return word;
 }
 
-Message decrypt(Key& key, const Cipher& cipher)
+Message tryDecrypt(const Cipher& cipher, Key& key)
 {
 	Message message;
-	Message word;
-	for (auto i : cipher)
+	auto end = cipher.end();
+	size_t index = 0;
+	for (auto iter = cipher.begin(); iter != end;)
 	{
-		char c = key.decryptChar(i);
-		if (!allowed(c))
+		// skip over delimiters
+		while (iter != end && isDelimiter(key.decrypt(*iter, index)))
 		{
-			key.ignore();
-			return Message();
+			message.push_back(key.decrypt(*iter, index++));
+			++iter;
 		}
 
-		if( !word.empty() || !isspace(c) )
+		// process a word at a time
+		Message word = tryDecryptWord(iter, end, key, index);
+		if (iter == end)
 		{
-			word.push_back(c);
+			// success!
+			return message;
 		}
 
-		if (!isWord(word))
+		if (word.empty())
 		{
-			key.next();
-			return Message();
+			// wrong key
+			return word;
 		}
 
-		if (isspace(c))
-		{
-			word.clear();
-		}
-		message.push_back(c);
-		key.step();
+		// so far so good...
+		message += word;
 	}
 
-	if (!isEnglish(message))
-	{
-		key.next();
-		return Message();
-	}
-
+	// success!
 	return message;
+}
+
+Message tryDecrypt(const Cipher& cipher)
+{
+	for (Key key; key; key.next())
+	{
+		Message message = tryDecrypt(cipher, key);
+		if (!message.empty())
+		{
+			return message;
+		}
+	}
+	return Message("??");
 }
 
 Cipher readCipher()
@@ -196,10 +178,13 @@ Cipher readCipher()
 	Cipher cipher;
 	while (cipherFile.good())
 	{
-		Cipher::value_type c;
+		int c;
 		cipherFile >> c;
-		cipher.push_back(c);
-		cipherFile.ignore(1); // ignore ','
+		if( cipherFile.good())
+		{
+			cipher.push_back(c);
+			cipherFile.ignore(1); // ignore ','
+		}
 	}
 	return cipher;
 }
@@ -207,17 +192,7 @@ Cipher readCipher()
 int main()
 {
 	START_TIMER;
-
 	Cipher cipher = readCipher();
-
-	Key key;
-	while (key)
-	{
-		Message message = decrypt(key, cipher);
-		if (!message.empty())
-		{
-			unsigned int sum = std::accumulate(message.begin(), message.end(), 0);
-			return result(107359, sum);
-		}
-	}
+	Message message = tryDecrypt(cipher);
+	return result(107359, std::accumulate(message.begin(), message.end(), 0));
 }
